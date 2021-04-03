@@ -8,5 +8,5 @@
 import Foundation
 
 protocol QuoteRequestDatasource {
-
+    func quoteRequests(completion: @escaping ([QuoteRequest]?, Error?) -> Void)
 }

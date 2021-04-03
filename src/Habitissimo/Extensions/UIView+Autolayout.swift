@@ -14,14 +14,14 @@ extension UIView {
         return view
     }
 
-    func fitToSuperview() {
+    func fitToSuperview(with insets: NSDirectionalEdgeInsets = .zero) {
         guard let superview = superview else { return }
 
         NSLayoutConstraint.activate([
-            leadingAnchor.constraint(equalTo: superview.leadingAnchor),
-            topAnchor.constraint(equalTo: superview.topAnchor),
-            trailingAnchor.constraint(equalTo: superview.trailingAnchor),
-            bottomAnchor.constraint(equalTo: superview.bottomAnchor)
+            leadingAnchor.constraint(equalTo: superview.leadingAnchor, constant: insets.leading),
+            topAnchor.constraint(equalTo: superview.topAnchor, constant: insets.top),
+            superview.trailingAnchor.constraint(equalTo: trailingAnchor, constant: insets.trailing),
+            superview.bottomAnchor.constraint(equalTo: bottomAnchor, constant: insets.bottom)
         ])
     }
 }

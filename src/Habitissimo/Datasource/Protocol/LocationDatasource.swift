@@ -8,5 +8,5 @@
 import Foundation
 
 protocol LocationDatasource {
-    func requestLocations(completion: @escaping ([Location]?, Error?) -> Void)
+    func locations(completion: @escaping ([Location]?, Error?) -> Void)
 }

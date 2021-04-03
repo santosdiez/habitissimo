@@ -14,11 +14,16 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
                options connectionOptions: UIScene.ConnectionOptions) {
-        guard let windowScene = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene),
+              let appDelegate = (UIApplication.shared.delegate as? AppDelegate) else { return }
 
         let window = UIWindow(windowScene: windowScene)
 
-        let datasource = CoreDataQuoteRequestDatasource()
+        let datasource = CoreDataQuoteRequestDatasource(context: appDelegate.persistentContainer.viewContext)
+
+//        datasource.createQuoteRequest { _ in }
+//        datasource.createQuoteRequest { _ in }
+
         let viewController = QuoteRequestsListViewController(datasource: datasource)
 
         window.rootViewController = UINavigationController(rootViewController: viewController)
@@ -55,6 +60,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
 
         // Save changes in the application's managed object context when the application transitions to the background.
-        (UIApplication.shared.delegate as? AppDelegate)?.saveContext()
+
+        (UIApplication.shared.delegate as? AppDelegate)?.persistentContainer.viewContext.saveIfNeeded()
     }
 }

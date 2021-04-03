@@ -15,6 +15,20 @@ struct QuoteRequestViewModel: Hashable {
     let locationName: String
     let jobDescription: String
 
+    static func from(_ model: QuoteRequest) -> QuoteRequestViewModel? {
+        guard let id = model.id,
+              let name = model.name,
+              let phoneNumber = model.phone,
+              let jobDescription = model.jobDescription else { return nil }
+
+        return QuoteRequestViewModel(id: id,
+                                     name: name,
+                                     subcategoryName: "",
+                                     phoneNumber: phoneNumber,
+                                     locationName: "",
+                                     jobDescription: jobDescription)
+    }
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

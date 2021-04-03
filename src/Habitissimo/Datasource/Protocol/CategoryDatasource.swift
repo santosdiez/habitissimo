@@ -8,4 +8,5 @@
 import Foundation
 
 protocol CategoryDatasource {
+    func categories(completion: @escaping ([Category]?, Error?) -> Void)
 }

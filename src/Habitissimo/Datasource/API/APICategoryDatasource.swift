@@ -7,10 +7,12 @@
 
 import Foundation
 
-struct APICategoryDatasource: CategoryDatasource {
-    private let client: CategoryRequestsClient
+struct APICategoryDatasource {
+    let client: CategoryRequestsClient
+}
 
-    init(client: CategoryRequestsClient) {
-        self.client = client
+extension APICategoryDatasource: CategoryDatasource {
+    func categories(completion: @escaping ([Category]?, Error?) -> Void) {
+        // TODO
     }
 }

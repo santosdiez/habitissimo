@@ -8,15 +8,11 @@
 import Foundation
 
 struct APILocationDatasource {
-    private let client: LocationRequestsClient
-
-    init(client: LocationRequestsClient) {
-        self.client = client
-    }
+    let client: LocationRequestsClient
 }
 
 extension APILocationDatasource: LocationDatasource {
-    func requestLocations(completion: @escaping ([Location]?, Error?) -> Void) {
+    func locations(completion: @escaping ([Location]?, Error?) -> Void) {
         client.requestLocations(completion: completion)
     }
 }

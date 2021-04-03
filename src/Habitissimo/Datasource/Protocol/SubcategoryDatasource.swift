@@ -8,5 +8,5 @@
 import Foundation
 
 protocol SubcategoryDatasource {
-
+    func subcategories(for categoryId: String, completion: @escaping ([Subcategory]?, Error?) -> Void)
 }

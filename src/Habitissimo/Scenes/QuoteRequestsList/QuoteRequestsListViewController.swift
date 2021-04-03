@@ -40,7 +40,16 @@ class QuoteRequestsListViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // Register cells
+        tableView.register(QuoteRequestCell.self, forCellReuseIdentifier: QuoteRequestCell.reuseIdentifier)
+
         applySnapshot(animatingDifferences: false)
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        loadRequests()
     }
 }
 
@@ -60,6 +69,7 @@ private extension QuoteRequestsListViewController {
     func setupSubviews() {
         tableView.estimatedRowHeight = UITableView.automaticDimension
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.separatorStyle = .none
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add,
                                                             target: self,
@@ -68,6 +78,16 @@ private extension QuoteRequestsListViewController {
 }
 
 private extension QuoteRequestsListViewController {
+    func loadRequests() {
+        datasource?.quoteRequests { requests, error in
+            if let requests = requests {
+                self.quotes = requests.compactMap { QuoteRequestViewModel.from($0) }
+            }
+
+            self.applySnapshot(animatingDifferences: true)
+        }
+    }
+
     func applySnapshot(animatingDifferences: Bool = true) {
         var snapshot = NSDiffableDataSourceSnapshot<Section, QuoteRequestViewModel>()
         snapshot.appendSections([.main])

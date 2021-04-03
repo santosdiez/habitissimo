@@ -93,7 +93,7 @@ private extension WizardStepViewController {
         button.layer.cornerRadius = Constants.buttonRadius
         button.setTitleColor(.label, for: .normal)
         button.setTitleColor(.systemGray, for: .disabled)
-        button.backgroundColor = .lightGray
+        button.backgroundColor = Asset.Colors.hOrange.color
         button.setTitle(buttonTitle, for: .normal)
         button.addTarget(self, action: #selector(tapped(sender:)), for: .touchUpInside)
     }

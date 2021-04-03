@@ -7,10 +7,12 @@
 
 import Foundation
 
-struct APISubcategoryDatasource: SubcategoryDatasource {
-    private let client: SubcategoryRequestsClient
+struct APISubcategoryDatasource {
+    let client: SubcategoryRequestsClient
+}
 
-    init(client: SubcategoryRequestsClient) {
-        self.client = client
+extension APISubcategoryDatasource: SubcategoryDatasource {
+    func subcategories(for categoryId: String, completion: @escaping ([Subcategory]?, Error?) -> Void) {
+        // TODO
     }
 }

@@ -32,13 +32,20 @@ class QuoteRequestCell: UITableViewCell {
 
     func setup(with quoteRequest: QuoteRequestViewModel) {
         nameLabel.text = [quoteRequest.name, quoteRequest.subcategoryName].joined(separator: " - ")
-
+        phoneLabel.text = quoteRequest.phoneNumber
     }
 }
 
 private extension QuoteRequestCell {
-    func setupView() {
+    enum Constants {
+        static let margin: CGFloat = 15
+        static let borderWidth: CGFloat = 1
+    }
 
+    func setupView() {
+        addSubviews()
+        addConstraints()
+        setupSubviews()
     }
 
     func addSubviews() {
@@ -53,11 +60,11 @@ private extension QuoteRequestCell {
             descriptionLabel
         ])
 
-        addSubview(stackView)
+        contentView.addSubview(stackView)
     }
 
     func addConstraints() {
-        stackView.fitToSuperview()
+        stackView.fitToSuperview(with: NSDirectionalEdgeInsets(all: Constants.margin))
     }
 
     func setupSubviews() {
@@ -71,8 +78,13 @@ private extension QuoteRequestCell {
         emailTitleLabel,
         descriptionTitleLabel].forEach {
             $0.font = UIFont.preferredFont(forTextStyle: .caption1)
-            $0.textColor = .systemGray6
+            $0.textColor = .lightGray
         }
+
+        nameTitleLabel.text = NSLocalizedString("Name", comment: "")
+        phoneTitleLabel.text = NSLocalizedString("Phone", comment: "")
+        emailTitleLabel.text = NSLocalizedString("Email", comment: "")
+        descriptionTitleLabel.text = NSLocalizedString("Description", comment: "")
 
         [nameLabel,
         phoneLabel,
@@ -82,5 +94,17 @@ private extension QuoteRequestCell {
             $0.numberOfLines = 0
             $0.lineBreakMode = .byWordWrapping
         }
+
+        // Add bottom border
+        let border = UIView.initForAutolayout()
+        border.backgroundColor = .lightGray
+        contentView.addSubview(border)
+
+        NSLayoutConstraint.activate([
+            border.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            border.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            border.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            border.heightAnchor.constraint(equalToConstant: Constants.borderWidth)
+        ])
     }
 }
