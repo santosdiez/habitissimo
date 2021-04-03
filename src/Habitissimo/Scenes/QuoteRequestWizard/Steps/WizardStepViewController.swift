@@ -7,19 +7,26 @@
 
 import UIKit
 
+protocol WizardStepViewControllerDelegate: AnyObject {
+    func didTapButton(for field: WizardField)
+}
+
 class WizardStepViewController: UIViewController {
     private let titleLabel = UILabel.initForAutolayout()
     private let button = UIButton.initForAutolayout(type: .custom)
     private let errorLabel = UILabel.initForAutolayout()
     private let buttonTitle: String
+    private weak var delegate: WizardStepViewControllerDelegate?
 
     let wizardField: WizardField?
     let containerView = UIView.initForAutolayout()
 
     init(for field: WizardField,
-         buttonTitle: String) {
+         buttonTitle: String,
+         delegate: WizardStepViewControllerDelegate? = nil) {
         wizardField = field
         self.buttonTitle = buttonTitle
+        self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
         setupView()
     }
@@ -34,11 +41,9 @@ class WizardStepViewController: UIViewController {
 
 private extension WizardStepViewController {
     enum Constants {
-        static let titleTopMargin: CGFloat = 60
+        static let titleTopMargin: CGFloat = 100
         static let titleHorizontalMargin: CGFloat = 30
-        static let titleFontSize: CGFloat = 20
         static let errorLabelTopMargin: CGFloat = 10
-        static let errorFontSize: CGFloat = 12
         static let containerViewTopMargin: CGFloat = 10
         static let buttonTopMargin: CGFloat = 50
         static let buttonHeight: CGFloat = 50
@@ -82,16 +87,16 @@ private extension WizardStepViewController {
         view.backgroundColor = .systemBackground
 
         titleLabel.numberOfLines = 0
-        titleLabel.font = UIFont.boldSystemFont(ofSize: Constants.titleFontSize)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .title3)
 
         titleLabel.text = wizardField?.title
 
         errorLabel.numberOfLines = 0
-        errorLabel.font = UIFont.systemFont(ofSize: Constants.errorFontSize)
+        errorLabel.font = UIFont.preferredFont(forTextStyle: .caption1)
         errorLabel.textColor = .red
 
         button.layer.cornerRadius = Constants.buttonRadius
-        button.setTitleColor(.label, for: .normal)
+        button.setTitleColor(.systemBackground, for: .normal)
         button.setTitleColor(.systemGray, for: .disabled)
         button.backgroundColor = Asset.Colors.hOrange.color
         button.setTitle(buttonTitle, for: .normal)
@@ -99,6 +104,7 @@ private extension WizardStepViewController {
     }
 
     @objc func tapped(sender: UIButton) {
-        // TODO
+        guard let field = wizardField else { return }
+        delegate?.didTapButton(for: field)
     }
 }

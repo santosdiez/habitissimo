@@ -11,8 +11,11 @@ class WizardTextFieldStepViewController: WizardStepViewController {
     private let textField = UITextField.initForAutolayout()
 
     override init(for field: WizardField,
-                  buttonTitle: String) {
-        super.init(for: field, buttonTitle: buttonTitle)
+                  buttonTitle: String,
+                  delegate: WizardStepViewControllerDelegate?) {
+        super.init(for: field,
+                   buttonTitle: buttonTitle,
+                   delegate: delegate)
         setupView()
     }
 

@@ -41,6 +41,8 @@ class QuoteRequestsListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        title = NSLocalizedString("Quote requests", comment: "")
+
         // Register cells
         tableView.register(QuoteRequestCell.self, forCellReuseIdentifier: QuoteRequestCell.reuseIdentifier)
 

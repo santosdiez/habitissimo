@@ -58,15 +58,24 @@ enum WizardField {
 
 class QuoteRequestWizardViewController: UIPageViewController {
     private let cancelButton = UIButton.initForAutolayout(type: .custom)
+    private let titleLabel = UILabel.initForAutolayout()
     private lazy var wizardViewControllers: [UIViewController] = {
         let nextButton = NSLocalizedString("Next", comment: "")
         let saveButton = NSLocalizedString("Save", comment: "")
 
         return [
-            WizardTextFieldStepViewController(for: .name, buttonTitle: nextButton),
-            WizardTextFieldStepViewController(for: .description, buttonTitle: nextButton),
-            WizardTextFieldStepViewController(for: .email, buttonTitle: nextButton),
-            WizardTextFieldStepViewController(for: .phone, buttonTitle: saveButton)
+            WizardTextFieldStepViewController(for: .name,
+                                              buttonTitle: nextButton,
+                                              delegate: self),
+            WizardTextFieldStepViewController(for: .description,
+                                              buttonTitle: nextButton,
+                                              delegate: self),
+            WizardTextFieldStepViewController(for: .email,
+                                              buttonTitle: nextButton,
+                                              delegate: self),
+            WizardTextFieldStepViewController(for: .phone,
+                                              buttonTitle: saveButton,
+                                              delegate: self)
         ]
     }()
 
@@ -124,7 +133,36 @@ extension QuoteRequestWizardViewController: UIPageViewControllerDataSource {
     }
 }
 
+extension QuoteRequestWizardViewController: WizardStepViewControllerDelegate {
+    func didTapButton(for field: WizardField) {
+        guard let currentViewController = self.viewControllers?.first else { return }
+
+        guard let nextViewController = self.dataSource?.pageViewController(self,
+                                                                           viewControllerAfter: currentViewController) as? WizardStepViewController else {
+            // If there's no next, we reached the last controller. Time to try and save
+            return
+        }
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.setViewControllers([nextViewController],
+                                    direction: .forward,
+                                    animated: true,
+                                    completion: nil)
+        }
+    }
+}
+
 private extension QuoteRequestWizardViewController {
+    enum Constants {
+        static let cancelButtonTopMargin: CGFloat = 10
+        static let cancelButtonTrailingMargin: CGFloat = 5
+        static let cancelButtonSize: CGFloat = 40
+        static let titleTopMargin: CGFloat = 40
+        static let titleLeadingMargin: CGFloat = 30
+        static let titleTrailingMargin: CGFloat = 40
+    }
+
     func setupView() {
         addSubviews()
         addConstraints()
@@ -132,15 +170,21 @@ private extension QuoteRequestWizardViewController {
     }
 
     func addSubviews() {
-        view.addSubview(cancelButton)
+        view.addSubviews([
+            titleLabel,
+            cancelButton
+        ])
     }
 
     func addConstraints() {
         NSLayoutConstraint.activate([
-            cancelButton.topAnchor.constraint(equalTo: view.topAnchor, constant: 10),
-            view.trailingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: 5),
-            cancelButton.widthAnchor.constraint(equalToConstant: 40),
-            cancelButton.heightAnchor.constraint(equalToConstant: 40)
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.titleTopMargin),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: Constants.titleLeadingMargin),
+            view.trailingAnchor.constraint(equalTo: titleLabel.trailingAnchor, constant: Constants.titleTrailingMargin),
+            cancelButton.topAnchor.constraint(equalTo: view.topAnchor, constant: Constants.cancelButtonTopMargin),
+            view.trailingAnchor.constraint(equalTo: cancelButton.trailingAnchor, constant: Constants.cancelButtonTrailingMargin),
+            cancelButton.widthAnchor.constraint(equalToConstant: Constants.cancelButtonSize),
+            cancelButton.heightAnchor.constraint(equalToConstant: Constants.cancelButtonSize)
         ])
     }
 
@@ -152,6 +196,9 @@ private extension QuoteRequestWizardViewController {
         ])
         pageControlAppearance.pageIndicatorTintColor = .systemGray
         pageControlAppearance.currentPageIndicatorTintColor = .label
+
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .title1)
+        titleLabel.text = NSLocalizedString("New quote request", comment: "")
 
         cancelButton.tintColor = .label
         cancelButton.contentMode = .scaleAspectFit
